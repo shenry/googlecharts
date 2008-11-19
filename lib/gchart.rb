@@ -16,7 +16,7 @@ class Gchart
   @@file_name = 'chart.png'
   
   attr_accessor :title, :type, :width, :height, :horizontal, :grouped, :legend, :data, :encoding, :max_value, :bar_colors,
-                :title_color, :title_size, :custom, :axis_with_labels, :axis_labels, :bar_width_and_spacing, :id, :alt, :class
+                :line_weight, :title_color, :title_size, :custom, :axis_with_labels, :axis_labels, :bar_width_and_spacing, :id, :alt, :class
     
   # Support for Gchart.line(:title => 'my title', :size => '400x600')
   def self.method_missing(m, options={})
@@ -73,6 +73,11 @@ class Gchart
   
   def size
     "#{@width}x#{@height}"
+  end
+  
+  # Defines line weights for line and line_xy graphs
+  def line_weight=(string)
+    @line_weight = string
   end
   
   # Sets the orientation of a bar graph
@@ -183,6 +188,10 @@ class Gchart
     chart_type = fill_type(@chart_type) || 's' if @chart_color
     
     "chf=" + {'bg' => fill_for(bg_type, @bg_color, @bg_angle), 'c' => fill_for(chart_type, @chart_color, @chart_angle)}.map{|k,v| "#{k},#{v}" unless v.nil?}.compact.join('|')      
+  end
+  
+  def set_line_weight
+    "chls=#{line_weight}"
   end
   
   # set bar, line colors
@@ -390,6 +399,8 @@ class Gchart
         set_colors if @bg_color.nil?
       when '@data'
         set_data unless @data == []
+      when '@line_weight'
+        set_line_weight
       when '@bar_colors'
         set_bar_colors
       when '@bar_width_and_spacing'
