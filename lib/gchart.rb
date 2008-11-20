@@ -75,9 +75,17 @@ class Gchart
     "#{@width}x#{@height}"
   end
   
-  # Defines line weights for line and line_xy graphs
-  def line_weight=(string)
-    @line_weight = string
+  # Defines line weights for line and line_xy graphs.
+  # Accepts line styles as nested arrays or strings.
+  # Read http://code.google.com/apis/chart/styles.html#line_styles for style instructions.
+  def line_weight=(object)
+    if object.is_a?(String)
+      @line_weight = string
+    elsif object.is_a?(Array)
+      @line_weight = object[0].join(",").concat("|").concat(object[1].join(","))
+    else
+      return false
+    end
   end
   
   # Sets the orientation of a bar graph
